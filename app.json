@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "qr-scanner-hambax",
+    "name": "Hambax",
     "slug": "qr-scanner-hambax",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -18,10 +18,26 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.hambex.dev.qrscannerhambax",
+      "permissions": [
+        "INTERNET"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b92c11e3-638b-465d-9f3b-6d7323531203"
+      }
+    },
+    "owner": "hambex.dev",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/b92c11e3-638b-465d-9f3b-6d7323531203"
     }
   }
 }
