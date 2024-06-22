@@ -1,41 +1,39 @@
-import React, { useState, useEffect } from 'react';
+// src/screens/auth/RegisterUserScreen.js
+
+import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '@env';
 
-const LoginScreen = ({ navigation }) => {
+const RegisterUserScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
-    useEffect(() => {
-    }, []);
+    const handleRegister = async () => {
+        if (password !== confirmPassword) {
+            alert('Passwords do not match');
+            return;
+        }
 
-    const handleLogin = async () => {
         try {
-            console.log('Sending login request to:', `${API_URL}/api/auth/login`);
-            const response = await axios.post(`${API_URL}/api/auth/login`, { email, password });
-            console.log('Login response to:', `${API_URL}/api/auth/login`);
-            console.log('Login response:', response.data);
+            const response = await axios.post(`${API_URL}/api/auth/register`, {
+                email,
+                password,
+                user_type: 'regular',
+            });
             await AsyncStorage.setItem('token', response.data.token);
             navigation.replace('Home');
         } catch (error) {
-            if (error.response) {
-                console.error('Login error response data:', error.response.data);
-                console.error('Login error response status:', error.response.status);
-                console.error('Login error response headers:', error.response.headers);
-            } else if (error.request) {
-                console.error('Login error request:', error.request);
-            } else {
-                console.error('Login error message:', error.message);
-            }
-            console.error('Login error config:', error.config);
+            console.error('Registration error:', error);
+            alert('Registration failed');
         }
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Login</Text>
+            <Text style={styles.title}>Register as User</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Email"
@@ -49,7 +47,14 @@ const LoginScreen = ({ navigation }) => {
                 value={password}
                 onChangeText={setPassword}
             />
-            <Button title="Login" onPress={handleLogin} />
+            <TextInput
+                style={styles.input}
+                placeholder="Confirm Password"
+                secureTextEntry
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+            />
+            <Button title="Register" onPress={handleRegister} />
         </View>
     );
 };
@@ -74,4 +79,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default LoginScreen;
+export default RegisterUserScreen;

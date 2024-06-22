@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
+import { API_URL } from '@env';
 
 const ScanScreen = () => {
     const [hasPermission, setHasPermission] = useState(null);
@@ -10,12 +12,12 @@ const ScanScreen = () => {
     const [message, setMessage] = useState('');
     const [showError, setShowError] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const { t } = useTranslation();
 
     useEffect(() => {
         (async () => {
             const { status } = await BarCodeScanner.requestPermissionsAsync();
             setHasPermission(status === 'granted');
-            console.log('Camera permission status:', status);
         })();
     }, []);
 
@@ -24,16 +26,14 @@ const ScanScreen = () => {
 
         try {
             const token = await AsyncStorage.getItem('token');
-            console.log('Token retrieved from AsyncStorage:', token);
-
             const response = await axios.post(
-                `https://tusa-koeln.de/api/tickets/check_qr`,
+                `${API_URL}/api/tickets/check_qr`,
                 { qr_hash: data },
                 { headers: { 'x-access-token': token } }
             );
 
-            console.log('Response from API:', response.data);
-            setMessage(response.data.message);
+            response.data.message
+            setMessage(t(response.data.message));
 
             if (response.data.status === 'fail' || response.data.active === 0) {
                 setShowError(true);
@@ -54,28 +54,28 @@ const ScanScreen = () => {
     };
 
     if (hasPermission === null) {
-        return <Text>Requesting for camera permission</Text>;
+        return <Text>{t('cam_permission_request')}</Text>;
     }
     if (hasPermission === false) {
-        return <Text>No access to camera</Text>;
+        return <Text>{t('no_access_to_camera')}</Text>;
     }
 
     return (
         <View style={styles.container}>
             {showError ? (
                 <View style={[styles.overlay, styles.errorContainer]}>
-                    <Text style={styles.errorText}>Error</Text>
+                    <Text style={styles.errorText}>{t('error')}</Text>
                     <Text style={styles.message}>{message}</Text>
                     <TouchableOpacity style={styles.button} onPress={handleNextScan}>
-                        <Text style={styles.buttonText}>Scan next</Text>
+                        <Text style={styles.buttonText}>{t('scan_next')}</Text>
                     </TouchableOpacity>
                 </View>
             ) : showSuccess ? (
                 <View style={[styles.overlay, styles.successContainer]}>
-                    <Text style={styles.successText}>Success</Text>
+                    <Text style={styles.successText}>{t('sucecss')}</Text>
                     <Text style={styles.message}>{message}</Text>
                     <TouchableOpacity style={styles.button} onPress={handleNextScan}>
-                        <Text style={styles.buttonText}>Scan next</Text>
+                        <Text style={styles.buttonText}>{t('scan_next')}</Text>
                     </TouchableOpacity>
                 </View>
             ) : (

@@ -1,0 +1,28 @@
+{
+    "welcome": "Welcome",
+    "myEvents": "My Events",
+    "qrScan": "QR Scan",
+    "statistics": "Statistics",
+    "settings": "Settings",
+    "messages": "Messages",
+    "support": "Support",
+    "cam_permission_request": "Requesting for camera permission",
+    "no_access_to_camera": "No access to camera",
+    "error": "Error",
+    "scan_next": "Scan next",
+    "success": "Success",
+    "qr_code_used": "QR code is already used",
+    "qr_code_deactivated": "QR code is valid and has been deactivated.",
+    "qr_code_not_found": "QR code not found",
+
+    "introduction_welcome_text":"Welcome to HAMBAX!",
+    "introduction_2": "Discover amazing events around you.",
+    "introduction_3": "Join Events",
+    "introduction_4": "Get tickets for the best events in town.",
+    "introduction_5": "Become an Eventmake",
+    "introduction_6": "Create and manage your own events",
+    
+    "login": "Login",
+    "sign_up": "Create new account",
+    "sign_up_eventmaker": "Register as Eventmaker"
+}
