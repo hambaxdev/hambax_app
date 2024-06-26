@@ -1,5 +1,3 @@
-// src/assets/index.js
-
 export { default as PartyImage } from '../../assets/home_screen_party.png';
 export { default as PartyIcon } from '../../assets/icons/party_icon.png';
 export { default as QrScanIcon } from '../../assets/icons/qr_scan_icon.png';
@@ -10,3 +8,5 @@ export { default as SupportIcon } from '../../assets/icons/support_icon.png';
 export { default as GardenPartyImg } from '../../assets/Garden-party.png';
 export { default as HeyImg } from '../../assets/Hey.png';
 export { default as SignInImg } from '../../assets/Girl-Sign-in.png';
+export { default as SignUpImg } from '../../assets/User-Account-Sign-up.png';
+export { default as BackArrowIcon } from '../../assets/icons/back_arrow.png';

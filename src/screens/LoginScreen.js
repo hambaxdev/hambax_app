@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '@env';
+import { SignUpImg } from '../assets';
+import { useTranslation } from 'react-i18next';
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -13,10 +15,7 @@ const LoginScreen = ({ navigation }) => {
 
     const handleLogin = async () => {
         try {
-            console.log('Sending login request to:', `${API_URL}/api/auth/login`);
             const response = await axios.post(`${API_URL}/api/auth/login`, { email, password });
-            console.log('Login response to:', `${API_URL}/api/auth/login`);
-            console.log('Login response:', response.data);
             await AsyncStorage.setItem('token', response.data.token);
             navigation.replace('Home');
         } catch (error) {
@@ -29,27 +28,39 @@ const LoginScreen = ({ navigation }) => {
             } else {
                 console.error('Login error message:', error.message);
             }
-            console.error('Login error config:', error.config);
         }
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Login</Text>
+            <Image source={SignUpImg} style={styles.logo} />
+            <Text style={styles.title}>Добро пожаловать</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Email"
+                placeholderTextColor="#aaa"
                 value={email}
                 onChangeText={setEmail}
             />
             <TextInput
                 style={styles.input}
-                placeholder="Password"
+                placeholder="Пароль"
+                placeholderTextColor="#aaa"
                 secureTextEntry
                 value={password}
                 onChangeText={setPassword}
             />
-            <Button title="Login" onPress={handleLogin} />
+            <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                <Text style={styles.buttonText}>Войти</Text>
+            </TouchableOpacity>
+            <View style={styles.footer}>
+                <TouchableOpacity onPress={() => navigation.navigate('RegisterUser')}>
+                    <Text style={styles.footerText}>Создать новый аккаунт</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('RegisterEventmaker')}>
+                    <Text style={styles.footerText}>Зарегистрироваться как организатор</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 };
@@ -58,19 +69,53 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
+        alignItems: 'center',
         padding: 20,
+        backgroundColor: '#f5f5f5',
+    },
+    logo: {
+        width: 300,
+        height: 200,
+        marginBottom: 20,
     },
     title: {
         fontSize: 24,
-        marginBottom: 20,
-        textAlign: 'center',
+        marginBottom: 30,
+        fontWeight: 'bold',
+        color: '#333',
     },
     input: {
-        height: 40,
-        borderColor: 'gray',
+        height: 50,
+        width: '100%',
+        borderColor: '#ddd',
         borderWidth: 1,
+        borderRadius: 25,
         marginBottom: 20,
-        paddingHorizontal: 10,
+        paddingHorizontal: 15,
+        backgroundColor: '#fff',
+        fontSize: 16,
+        color: '#333',
+    },
+    button: {
+        width: '100%',
+        backgroundColor: '#e28743',
+        padding: 15,
+        borderRadius: 25,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    footer: {
+        marginTop: 20,
+        alignItems: 'center',
+    },
+    footerText: {
+        color: '#e28743',
+        fontSize: 14,
+        marginTop: 10,
     },
 });
 

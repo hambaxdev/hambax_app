@@ -15,6 +15,7 @@ import StatisticsScreen from '../screens/StatisticsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import MessagesScreen from '../screens/MessagesScreen';
 import SupportScreen from '../screens/SupportScreen';
+import EmailVerificationScreen from '../screens/auth/EmailVerificationScreen';
 
 const Stack = createStackNavigator();
 
@@ -47,6 +48,7 @@ const AppNavigator = () => {
                 <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Messages" component={MessagesScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Support" component={SupportScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="EmailVerification" component={EmailVerificationScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );
