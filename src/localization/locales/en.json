@@ -39,5 +39,7 @@
     "organization_address": "Organization Address",
     "phone_number": "Phone Number",
     "website": "Website",
-    "register_btn": "Register"
+    "register_btn": "Register",
+    "i_agree_to_the_terms": "I have read the user agreement and agree to its terms.",
+    "terms_and_conditions": "Terms and conditions"
 }

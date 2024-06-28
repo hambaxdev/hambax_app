@@ -65,7 +65,7 @@ export const validatePhase3 = (country, city, zipCode, streetName) => {
     return errors;
 };
 
-export const validatePhase4 = (organizationName, taxNumber, address, phone, website) => {
+export const validatePhase4 = (organizationName, taxNumber, address, phone, website, agreedToTerms) => {
     const errors = {};
 
     if (!organizationName) {
@@ -82,6 +82,9 @@ export const validatePhase4 = (organizationName, taxNumber, address, phone, webs
     }
     if (!website) {
         errors.website = 'Веб-сайт обязателен';
+    }
+    if (!agreedToTerms) {
+        errors.agreedToTerms = 'Вы должны согласиться с условиями';
     }
 
     return errors;
