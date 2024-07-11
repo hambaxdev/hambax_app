@@ -4,25 +4,30 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '@env';
 import { SignUpImg } from '../assets';
-import { useTranslation } from 'react-i18next';
+import VerificationModal from '../components/VerificationModal'; // Импортируем модальный компонент
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    useEffect(() => {
-    }, []);
+    const [modalVisible, setModalVisible] = useState(false);
 
     const handleLogin = async () => {
         try {
             const response = await axios.post(`${API_URL}/api/auth/login`, { email, password });
             await AsyncStorage.setItem('token', response.data.token);
-            navigation.replace('Home');
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Home' }],
+            });
         } catch (error) {
             if (error.response) {
                 console.error('Login error response data:', error.response.data);
                 console.error('Login error response status:', error.response.status);
                 console.error('Login error response headers:', error.response.headers);
+
+                if (error.response.status === 401 && error.response.data.message === "Please verify your email first.") {
+                    setModalVisible(true);
+                }
             } else if (error.request) {
                 console.error('Login error request:', error.request);
             } else {
@@ -61,6 +66,8 @@ const LoginScreen = ({ navigation }) => {
                     <Text style={styles.footerText}>Зарегистрироваться как организатор</Text>
                 </TouchableOpacity>
             </View>
+
+            <VerificationModal visible={modalVisible} onClose={() => setModalVisible(false)} />
         </View>
     );
 };

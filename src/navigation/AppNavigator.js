@@ -48,7 +48,7 @@ const AppNavigator = () => {
                 <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Messages" component={MessagesScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Support" component={SupportScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="EmailVerification" component={EmailVerificationScreen} />
+                <Stack.Screen name="EmailVerification" component={EmailVerificationScreen} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
     );

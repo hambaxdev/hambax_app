@@ -41,5 +41,8 @@
     "website": "Website",
     "register_btn": "Register",
     "i_agree_to_the_terms": "I have read the user agreement and agree to its terms.",
-    "terms_and_conditions": "Terms and conditions"
+    "terms_and_conditions": "Terms and conditions",
+    "verification_email_sent": "We have sent a verification email to your E-Mail.",
+    "please_check_email": "Please check your inbox and follow the instructions to complete your registration. If you didn't receive the email, check your 'Spam' or 'Junk' folder.",
+    "back_to_login": "Login"
 }

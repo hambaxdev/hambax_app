@@ -87,7 +87,7 @@ const RegisterEventmakerScreen = ({ navigation }) => {
                 }
             });
             await AsyncStorage.setItem('token', response.data.token);
-            navigation.replace('Home');
+            navigation.navigate('EmailVerification');
         } catch (error) {
             console.error('Registration error:', error);
             alert('Регистрация не удалась');
