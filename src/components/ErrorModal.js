@@ -12,6 +12,8 @@ const ErrorModal = ({ isVisible, onClose, errorCode }) => {
                 return "Неправильный логин или пароль";
             case 400:
                 return "Пожалуйста, заполните все поля";
+            case 404:
+                return "Пользователь с таким E-Mail не найден";
             case 500:
                 return "Произошла ошибка на сервере. Пожалуйста, попробуйте позже";
             default:

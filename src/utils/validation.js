@@ -1,5 +1,3 @@
-// src/utils/validation.js
-
 export const validateEmailAndPassword = (email, password, confirmPassword) => {
     const errors = {};
 
@@ -8,6 +6,26 @@ export const validateEmailAndPassword = (email, password, confirmPassword) => {
     } else if (!/\S+@\S+\.\S+/.test(email)) {
         errors.email = 'Некорректный email';
     }
+
+    if (!password) {
+        errors.password = 'Пароль обязателен';
+    } else if (password.length < 6) {
+        errors.password = 'Пароль должен быть не менее 6 символов';
+    }
+
+    if (!confirmPassword) {
+        errors.confirmPassword = 'Подтверждение пароля обязательно';
+    }
+
+    if (password !== confirmPassword) {
+        errors.confirmPassword = 'Пароли не совпадают';
+    }
+
+    return errors;
+};
+
+export const validatePassword = (password, confirmPassword) => {
+    const errors = {};
 
     if (!password) {
         errors.password = 'Пароль обязателен';

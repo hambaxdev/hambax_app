@@ -67,7 +67,7 @@ const RegisterEventmakerScreen = ({ navigation }) => {
         }
 
         try {
-            const response = await axios.post(`${API_URL}/api/auth/register`, {
+            const response = await axios.post(`${API_URL}/api/auth/register/eventmaker`, {
                 email,
                 password,
                 first_name: firstName,
@@ -77,14 +77,11 @@ const RegisterEventmakerScreen = ({ navigation }) => {
                 city,
                 zip_code: zipCode,
                 street_name: streetName,
-                user_type: 'eventmaker',
-                organization: {
-                    organization_name: organizationName,
-                    tax_number: taxNumber,
-                    address,
-                    phone,
-                    website,
-                }
+                organization_name: organizationName,
+                tax_number: taxNumber,
+                address,
+                phone,
+                website,
             });
             await AsyncStorage.setItem('token', response.data.token);
             navigation.navigate('EmailVerification');

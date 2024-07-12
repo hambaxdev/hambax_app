@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Linking from 'expo-linking';
 import IntroScreen from '../screens/introduction/IntroScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterUserScreen from '../screens/auth/RegisterUserScreen';
@@ -16,6 +17,9 @@ import SettingsScreen from '../screens/SettingsScreen';
 import MessagesScreen from '../screens/MessagesScreen';
 import SupportScreen from '../screens/SupportScreen';
 import EmailVerificationScreen from '../screens/auth/EmailVerificationScreen';
+import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
+import ResetPasswordScreen from '../screens/auth/ResetPasswordScreen';
+import ResetCodeScreen from '../screens/auth/ResetCodeScreen';
 
 const Stack = createStackNavigator();
 
@@ -34,8 +38,30 @@ const AppNavigator = () => {
         checkToken();
     }, []);
 
+    const linking = {
+        prefixes: [Linking.createURL('/')],
+        config: {
+            screens: {
+                Intro: '',
+                Login: 'login',
+                RegisterUser: 'register-user',
+                RegisterEventmaker: 'register-eventmaker',
+                Home: 'home',
+                Scan: 'scan',
+                Events: 'events',
+                Statistics: 'statistics',
+                Settings: 'settings',
+                Messages: 'messages',
+                Support: 'support',
+                EmailVerification: 'verify-email',
+                ForgotPassword: 'forgot-password',
+                ResetPassword: 'reset-password/:token',
+            },
+        },
+    };
+
     return (
-        <NavigationContainer ref={navigationRef}>
+        <NavigationContainer ref={navigationRef} linking={linking}>
             <Stack.Navigator initialRouteName="Intro">
                 <Stack.Screen name="Intro" component={IntroScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
@@ -49,6 +75,9 @@ const AppNavigator = () => {
                 <Stack.Screen name="Messages" component={MessagesScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Support" component={SupportScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="EmailVerification" component={EmailVerificationScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="ResetCode" component={ResetCodeScreen} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
     );

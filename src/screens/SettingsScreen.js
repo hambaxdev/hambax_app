@@ -9,7 +9,10 @@ const SettingsScreen = () => {
     const handleLogout = async () => {
         try {
             await AsyncStorage.removeItem('token');
-            navigation.replace('Login');
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+            });
         } catch (error) {
             console.error('Error logging out:', error);
         }

@@ -58,7 +58,11 @@ const LoginScreen = ({ navigation }) => {
             <TouchableOpacity style={styles.button} onPress={handleLogin}>
                 <Text style={styles.buttonText}>Войти</Text>
             </TouchableOpacity>
+            
             <View style={styles.footer}>
+                <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+                    <Text style={styles.footerText}>Забыли пароль?</Text>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate('RegisterUser')}>
                     <Text style={styles.footerText}>Создать новый аккаунт</Text>
                 </TouchableOpacity>
