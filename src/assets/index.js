@@ -10,3 +10,4 @@ export { default as HeyImg } from '../../assets/Hey.png';
 export { default as SignInImg } from '../../assets/Girl-Sign-in.png';
 export { default as SignUpImg } from '../../assets/User-Account-Sign-up.png';
 export { default as BackArrowIcon } from '../../assets/icons/back_arrow.png';
+export { default as DefaultAvatar } from '../../assets/icons/default_avatar.png';

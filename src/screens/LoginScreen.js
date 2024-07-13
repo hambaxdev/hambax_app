@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance'; // Импортируйте экземпляр Axios
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_URL } from '@env';
 import { SignUpImg } from '../assets';
 import VerificationModal from '../components/VerificationModal'; // Импортируем модальный компонент
 
@@ -13,8 +12,9 @@ const LoginScreen = ({ navigation }) => {
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post(`${API_URL}/api/auth/login`, { email, password });
-            await AsyncStorage.setItem('token', response.data.token);
+            const response = await axiosInstance.post('/api/auth/login', { email, password }); // Обратите внимание на префикс /api/auth
+            await AsyncStorage.setItem('accessToken', response.data.accessToken);
+            await AsyncStorage.setItem('refreshToken', response.data.refreshToken);
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'Home' }],
