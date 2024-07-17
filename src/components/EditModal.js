@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput, Alert } fro
 import axios from '../utils/axiosInstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '@env';
-import CountryPickerModal from './CountryPickerModal'; // Импортируйте модальный компонент выбора страны
+import CountryPickerModal from './CountryPickerModal';
 
 const EditModal = ({ visible, fields, data, onClose, onSave }) => {
     const [formData, setFormData] = useState({});
@@ -11,12 +11,19 @@ const EditModal = ({ visible, fields, data, onClose, onSave }) => {
     const [isCountryPickerVisible, setIsCountryPickerVisible] = useState(false);
 
     useEffect(() => {
-        const initialFormData = {};
-        fields.forEach(field => {
-            initialFormData[field] = data[field];
-        });
-        setFormData(initialFormData);
-        setInitialData(initialFormData);
+        if (fields.length > 0 && data) {
+            const initialFormData = {};
+            fields.forEach(field => {
+                const keys = field.split('.');
+                let value = data;
+                keys.forEach(key => {
+                    value = value ? value[key] : '';
+                });
+                initialFormData[field] = value;
+            });
+            setFormData(initialFormData);
+            setInitialData(initialFormData);
+        }
     }, [fields, data]);
 
     const handleChange = (field, value) => {
@@ -27,15 +34,23 @@ const EditModal = ({ visible, fields, data, onClose, onSave }) => {
     };
 
     const handleCountrySelect = (countryName) => {
-        handleChange('country', countryName); // Сохраняем страну
-        setIsCountryPickerVisible(false); // Закрываем модальное окно выбора страны
+        handleChange('address.country', countryName); 
+        setIsCountryPickerVisible(false); 
     };
 
     const handleSave = async () => {
         const changedFields = {};
         for (const field in formData) {
             if (formData[field] !== initialData[field]) {
-                changedFields[field] = formData[field];
+                const keys = field.split('.');
+                let obj = changedFields;
+                keys.forEach((key, index) => {
+                    if (index === keys.length - 1) {
+                        obj[key] = formData[field];
+                    } else {
+                        obj = obj[key] = obj[key] || {};
+                    }
+                });
             }
         }
 
@@ -83,13 +98,13 @@ const EditModal = ({ visible, fields, data, onClose, onSave }) => {
                     <Text style={styles.title}>Edit Information</Text>
                     {fields.map((field) => (
                         <View key={field} style={styles.inputContainer}>
-                            <Text style={styles.label}>{field}:</Text>
-                            {field === 'country' ? (
+                            <Text style={styles.label}>{field.split('.').join(' ')}:</Text>
+                            {field === 'address.country' ? (
                                 <TouchableOpacity onPress={() => setIsCountryPickerVisible(true)}>
                                     <TextInput
                                         style={styles.input}
-                                        value={formData.country}
-                                        editable={false} // Открываем модальное окно выбора страны при нажатии
+                                        value={formData[field]}
+                                        editable={false}
                                     />
                                 </TouchableOpacity>
                             ) : (
@@ -122,7 +137,7 @@ const styles = StyleSheet.create({
     modalContainer: {
         flex: 1,
         justifyContent: 'flex-end',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalContent: {
         height: '85%',

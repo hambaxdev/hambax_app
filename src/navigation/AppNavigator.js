@@ -21,6 +21,8 @@ import ResetCodeScreen from '../screens/auth/ResetCodeScreen';
 import PersonalDataScreen from '../screens/userData/PersonalDataScreen';
 import BottomTabNavigator from './BottomTabNavigator';
 import { API_URL } from '@env';
+import CreateEventScreen from '../screens/CreateEventScreen';
+import EditEventScreen from '../screens/EditEventScreen';
 
 const Stack = createStackNavigator();
 
@@ -104,6 +106,8 @@ const AppNavigator = () => {
                 <Stack.Screen name="PersonalData" component={PersonalDataScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="EmailVerification" component={EmailVerificationScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="MainTabs" component={BottomTabNavigator} options={{ headerShown: false }} />
+                <Stack.Screen name="CreateEvent" component={CreateEventScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="EditEvent" component={EditEventScreen} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
     );

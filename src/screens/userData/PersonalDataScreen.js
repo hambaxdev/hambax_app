@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '@env';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import EditModal from '../../components/EditModal'; // Импортируем новый компонент модального окна
+import EditModal from '../../components/EditModal';
 
 const PersonalDataScreen = () => {
     const [data, setData] = useState(null);
@@ -82,40 +82,40 @@ const PersonalDataScreen = () => {
             <View style={styles.card}>
                 <View style={styles.cardHeader}>
                     <Text style={styles.sectionTitle}>Адрес</Text>
-                    <TouchableOpacity onPress={() => handleEdit(['country', 'city', 'zipCode', 'streetName'])}>
+                    <TouchableOpacity onPress={() => handleEdit(['address.country', 'address.city', 'address.zipCode', 'address.streetName'])}>
                         <Ionicons name="pencil" size={20} color="black" />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.cardContent}>
                     <Text style={styles.label}>Страна:</Text>
-                    <Text style={styles.value}>{data.country}</Text>
+                    <Text style={styles.value}>{data.address?.country}</Text>
                     <Text style={styles.label}>Город:</Text>
-                    <Text style={styles.value}>{data.city}</Text>
+                    <Text style={styles.value}>{data.address?.city}</Text>
                     <Text style={styles.label}>Почтовый индекс:</Text>
-                    <Text style={styles.value}>{data.zipCode}</Text>
+                    <Text style={styles.value}>{data.address?.zipCode}</Text>
                     <Text style={styles.label}>Улица:</Text>
-                    <Text style={styles.value}>{data.streetName}</Text>
+                    <Text style={styles.value}>{data.address?.streetName}</Text>
                 </View>
             </View>
 
             <View style={styles.card}>
                 <View style={styles.cardHeader}>
                     <Text style={styles.sectionTitle}>Организация</Text>
-                    <TouchableOpacity onPress={() => handleEdit(['organizationName', 'taxNumber', 'address', 'phone', 'website'])}>
+                    <TouchableOpacity onPress={() => handleEdit(['organization.organizationName', 'organization.taxNumber', 'organization.address', 'organization.phone', 'organization.website'])}>
                         <Ionicons name="pencil" size={20} color="black" />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.cardContent}>
                     <Text style={styles.label}>Название:</Text>
-                    <Text style={styles.value}>{data.organizationName}</Text>
+                    <Text style={styles.value}>{data.organization?.organizationName}</Text>
                     <Text style={styles.label}>Налоговый номер:</Text>
-                    <Text style={styles.value}>{data.taxNumber}</Text>
+                    <Text style={styles.value}>{data.organization?.taxNumber}</Text>
                     <Text style={styles.label}>Адрес:</Text>
-                    <Text style={styles.value}>{data.address}</Text>
+                    <Text style={styles.value}>{data.organization?.address}</Text>
                     <Text style={styles.label}>Телефон:</Text>
-                    <Text style={styles.value}>{data.phone}</Text>
+                    <Text style={styles.value}>{data.organization?.phone}</Text>
                     <Text style={styles.label}>Веб-сайт:</Text>
-                    <Text style={styles.value}>{data.website}</Text>
+                    <Text style={styles.value}>{data.organization?.website}</Text>
                 </View>
             </View>
 

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import axiosInstance from '../utils/axiosInstance'; // Импортируйте экземпляр Axios
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import axiosInstance from '../utils/axiosInstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SignUpImg } from '../assets';
-import VerificationModal from '../components/VerificationModal'; // Импортируем модальный компонент
+import VerificationModal from '../components/VerificationModal';
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -12,7 +12,7 @@ const LoginScreen = ({ navigation }) => {
 
     const handleLogin = async () => {
         try {
-            const response = await axiosInstance.post('/api/auth/login', { email, password }); // Обратите внимание на префикс /api/auth
+            const response = await axiosInstance.post('/api/auth/login', { email, password });
             await AsyncStorage.setItem('accessToken', response.data.accessToken);
             await AsyncStorage.setItem('refreshToken', response.data.refreshToken);
             navigation.reset({
@@ -27,11 +27,15 @@ const LoginScreen = ({ navigation }) => {
 
                 if (error.response.status === 401 && error.response.data.message === "Please verify your email first.") {
                     setModalVisible(true);
+                } else {
+                    Alert.alert('Login Error', error.response.data.message || 'Failed to login. Please try again.');
                 }
             } else if (error.request) {
                 console.error('Login error request:', error.request);
+                Alert.alert('Login Error', 'No response from server. Please check your network connection.');
             } else {
                 console.error('Login error message:', error.message);
+                Alert.alert('Login Error', error.message);
             }
         }
     };

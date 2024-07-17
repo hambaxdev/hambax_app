@@ -25,15 +25,26 @@ const SettingsScreen = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                const data = await response.json();
+    
+                const text = await response.text();
+                console.log('Server response:', text);
+    
+                if (!response.ok) {
+                    console.error('Server responded with:', text);
+                    throw new Error('Failed to fetch user data');
+                }
+    
+                const data = JSON.parse(text);
                 setUserData(data);
             } catch (error) {
                 console.error('Failed to fetch user data:', error);
             }
         };
-
+    
         fetchUserData();
     }, []);
+    
+    
 
     const handleLogout = async () => {
         try {
