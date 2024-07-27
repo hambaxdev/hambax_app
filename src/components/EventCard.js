@@ -1,8 +1,11 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { API_URL } from '@env';
+import { useTranslation } from 'react-i18next';
 
 const EventCard = ({ event, onLongPress, onPress }) => {
+    const { t } = useTranslation();
+
     return (
         <TouchableOpacity onPress={onPress} onLongPress={onLongPress}>
             <View style={styles.card}>
@@ -11,9 +14,9 @@ const EventCard = ({ event, onLongPress, onPress }) => {
                     <Text style={styles.name}>{event.name}</Text>
                     <Text style={styles.date}>{new Date(event.date).toLocaleDateString()}</Text>
                     <Text style={styles.description}>{event.description}</Text>
-                    <Text style={styles.address}>{event.address}, {event.city}, {event.country}, {event.zipcode}</Text>
-                    <Text style={styles.price}>{event.price}</Text>
-                    {event.ticketCountLimited && <Text style={styles.ticketCount}>Tickets: {event.ticketCount}</Text>}
+                    <Text style={styles.address}>{`${event.address}, ${event.city}, ${event.country}, ${event.zipcode}`}</Text>
+                    <Text style={styles.price}>{`${event.price}€`}</Text>
+                    {event.ticketCountLimited && <Text style={styles.ticketCount}>{`${t('tickets')}: ${event.ticketCount}`}</Text>}
                 </View>
             </View>
         </TouchableOpacity>

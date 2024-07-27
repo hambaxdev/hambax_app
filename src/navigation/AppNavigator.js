@@ -19,10 +19,11 @@ import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 import ResetPasswordScreen from '../screens/auth/ResetPasswordScreen';
 import ResetCodeScreen from '../screens/auth/ResetCodeScreen';
 import PersonalDataScreen from '../screens/userData/PersonalDataScreen';
-import BottomTabNavigator from './BottomTabNavigator';
+// import BottomTabNavigator from './BottomTabNavigator'; // Закомментировано
 import { API_URL } from '@env';
 import CreateEventScreen from '../screens/CreateEventScreen';
 import EditEventScreen from '../screens/EditEventScreen';
+import NotificationSettingsScreen from '../screens/NotificationSettingsScreen';
 
 const Stack = createStackNavigator();
 
@@ -59,7 +60,7 @@ const AppNavigator = () => {
                     if (response.status === 200) {
                         navigationRef.current?.reset({
                             index: 0,
-                            routes: [{ name: 'MainTabs' }],
+                            routes: [{ name: 'Home' }], // Перенаправляем на HomeScreen
                         });
                     }
                 } catch (error) {
@@ -67,7 +68,7 @@ const AppNavigator = () => {
                     if (newToken) {
                         navigationRef.current?.reset({
                             index: 0,
-                            routes: [{ name: 'MainTabs' }],
+                            routes: [{ name: 'Home' }], // Перенаправляем на HomeScreen
                         });
                     } else {
                         navigationRef.current?.reset({
@@ -105,9 +106,9 @@ const AppNavigator = () => {
                 <Stack.Screen name="Support" component={SupportScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="PersonalData" component={PersonalDataScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="EmailVerification" component={EmailVerificationScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="MainTabs" component={BottomTabNavigator} options={{ headerShown: false }} />
                 <Stack.Screen name="CreateEvent" component={CreateEventScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="EditEvent" component={EditEventScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
     );

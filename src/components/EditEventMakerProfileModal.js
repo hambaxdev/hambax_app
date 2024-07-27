@@ -3,14 +3,12 @@ import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput, Alert } fro
 import axios from '../utils/axiosInstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '@env';
-import CountryPickerModal from './CountryPickerModal';
 import { useTranslation } from 'react-i18next';
 
 const EditModal = ({ visible, fields, data, onClose, onSave }) => {
     const { t } = useTranslation();
     const [formData, setFormData] = useState({});
     const [initialData, setInitialData] = useState({});
-    const [isCountryPickerVisible, setIsCountryPickerVisible] = useState(false);
 
     useEffect(() => {
         if (fields.length > 0 && data) {
@@ -33,11 +31,6 @@ const EditModal = ({ visible, fields, data, onClose, onSave }) => {
             ...formData,
             [field]: value,
         });
-    };
-
-    const handleCountrySelect = (countryName) => {
-        handleChange('address.country', countryName); 
-        setIsCountryPickerVisible(false); 
     };
 
     const handleSave = async () => {
@@ -64,7 +57,7 @@ const EditModal = ({ visible, fields, data, onClose, onSave }) => {
 
         try {
             const token = await AsyncStorage.getItem('accessToken');
-            const response = await axios.put(`${API_URL}/api/user/update-profile`, changedFields, {
+            const response = await axios.put(`${API_URL}/api/eventmakerProfile/update`, changedFields, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -101,21 +94,11 @@ const EditModal = ({ visible, fields, data, onClose, onSave }) => {
                     {fields.map((field) => (
                         <View key={field} style={styles.inputContainer}>
                             <Text style={styles.label}>{t(field.split('.').join('_'))}:</Text>
-                            {field === 'address.country' ? (
-                                <TouchableOpacity onPress={() => setIsCountryPickerVisible(true)}>
-                                    <TextInput
-                                        style={styles.input}
-                                        value={formData[field]}
-                                        editable={false}
-                                    />
-                                </TouchableOpacity>
-                            ) : (
-                                <TextInput
-                                    style={styles.input}
-                                    value={formData[field]}
-                                    onChangeText={(value) => handleChange(field, value)}
-                                />
-                            )}
+                            <TextInput
+                                style={styles.input}
+                                value={formData[field]}
+                                onChangeText={(value) => handleChange(field, value)}
+                            />
                         </View>
                     ))}
                     <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
@@ -125,11 +108,6 @@ const EditModal = ({ visible, fields, data, onClose, onSave }) => {
                         <Text style={styles.closeButtonText}>{t('close')}</Text>
                     </TouchableOpacity>
                 </View>
-                <CountryPickerModal
-                    visible={isCountryPickerVisible}
-                    onClose={() => setIsCountryPickerVisible(false)}
-                    onSelectCountry={handleCountrySelect}
-                />
             </View>
         </Modal>
     );

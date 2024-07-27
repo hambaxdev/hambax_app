@@ -5,8 +5,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '@env';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EditModal from '../../components/EditModal';
+import { useTranslation } from 'react-i18next';
 
 const PersonalDataScreen = () => {
+    const { t } = useTranslation();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -24,7 +26,7 @@ const PersonalDataScreen = () => {
             setData(response.data);
             setLoading(false);
         } catch (error) {
-            setError('Failed to fetch data');
+            setError(t('fetch_error'));
             setLoading(false);
         }
     };
@@ -60,61 +62,61 @@ const PersonalDataScreen = () => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.header}>Личная информация</Text>
+            <Text style={styles.header}>{t('personal_info')}</Text>
 
             <View style={styles.card}>
                 <View style={styles.cardHeader}>
-                    <Text style={styles.sectionTitle}>Личная информация</Text>
+                    <Text style={styles.sectionTitle}>{t('personal_info')}</Text>
                     <TouchableOpacity onPress={() => handleEdit(['firstName', 'lastName', 'citizenship'])}>
                         <Ionicons name="pencil" size={20} color="black" />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.cardContent}>
-                    <Text style={styles.label}>Имя:</Text>
+                    <Text style={styles.label}>{t('name')}:</Text>
                     <Text style={styles.value}>{data.firstName}</Text>
-                    <Text style={styles.label}>Фамилия:</Text>
+                    <Text style={styles.label}>{t('last_name')}:</Text>
                     <Text style={styles.value}>{data.lastName}</Text>
-                    <Text style={styles.label}>Гражданство:</Text>
+                    <Text style={styles.label}>{t('citizenship')}:</Text>
                     <Text style={styles.value}>{data.citizenship}</Text>
                 </View>
             </View>
 
             <View style={styles.card}>
                 <View style={styles.cardHeader}>
-                    <Text style={styles.sectionTitle}>Адрес</Text>
+                    <Text style={styles.sectionTitle}>{t('address')}</Text>
                     <TouchableOpacity onPress={() => handleEdit(['address.country', 'address.city', 'address.zipCode', 'address.streetName'])}>
                         <Ionicons name="pencil" size={20} color="black" />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.cardContent}>
-                    <Text style={styles.label}>Страна:</Text>
+                    <Text style={styles.label}>{t('country')}:</Text>
                     <Text style={styles.value}>{data.address?.country}</Text>
-                    <Text style={styles.label}>Город:</Text>
+                    <Text style={styles.label}>{t('city')}:</Text>
                     <Text style={styles.value}>{data.address?.city}</Text>
-                    <Text style={styles.label}>Почтовый индекс:</Text>
+                    <Text style={styles.label}>{t('zip_code')}:</Text>
                     <Text style={styles.value}>{data.address?.zipCode}</Text>
-                    <Text style={styles.label}>Улица:</Text>
+                    <Text style={styles.label}>{t('street')}:</Text>
                     <Text style={styles.value}>{data.address?.streetName}</Text>
                 </View>
             </View>
 
             <View style={styles.card}>
                 <View style={styles.cardHeader}>
-                    <Text style={styles.sectionTitle}>Организация</Text>
+                    <Text style={styles.sectionTitle}>{t('organization')}</Text>
                     <TouchableOpacity onPress={() => handleEdit(['organization.organizationName', 'organization.taxNumber', 'organization.address', 'organization.phone', 'organization.website'])}>
                         <Ionicons name="pencil" size={20} color="black" />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.cardContent}>
-                    <Text style={styles.label}>Название:</Text>
+                    <Text style={styles.label}>{t('organization_name')}:</Text>
                     <Text style={styles.value}>{data.organization?.organizationName}</Text>
-                    <Text style={styles.label}>Налоговый номер:</Text>
+                    <Text style={styles.label}>{t('tax_number')}:</Text>
                     <Text style={styles.value}>{data.organization?.taxNumber}</Text>
-                    <Text style={styles.label}>Адрес:</Text>
+                    <Text style={styles.label}>{t('address')}:</Text>
                     <Text style={styles.value}>{data.organization?.address}</Text>
-                    <Text style={styles.label}>Телефон:</Text>
+                    <Text style={styles.label}>{t('phone')}:</Text>
                     <Text style={styles.value}>{data.organization?.phone}</Text>
-                    <Text style={styles.label}>Веб-сайт:</Text>
+                    <Text style={styles.label}>{t('website')}:</Text>
                     <Text style={styles.value}>{data.organization?.website}</Text>
                 </View>
             </View>

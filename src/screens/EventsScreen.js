@@ -6,11 +6,14 @@ import EventCard from '../components/EventCard';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 const EventsScreen = ({ navigation }) => {
+    const { t } = useTranslation();
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [sortOrder, setSortOrder] = useState('desc');
 
     const fetchEvents = async () => {
         try {
@@ -20,12 +23,19 @@ const EventsScreen = ({ navigation }) => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            setEvents(response.data.sort((a, b) => new Date(b.date) - new Date(a.date)));
+            const sortedEvents = response.data.sort((a, b) => 
+                sortOrder === 'asc' ? new Date(a.date) - new Date(b.date) : new Date(b.date) - new Date(a.date)
+            );
+            setEvents(sortedEvents);
             setLoading(false);
         } catch (error) {
-            setError('Failed to fetch events');
+            setError(t('fetch_events_error'));
             setLoading(false);
         }
+    };
+
+    const toggleSortOrder = () => {
+        setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
     };
 
     const deleteEvent = async (eventId) => {
@@ -38,17 +48,17 @@ const EventsScreen = ({ navigation }) => {
             });
             setEvents(events.filter(event => event._id !== eventId));
         } catch (error) {
-            Alert.alert('Error', 'Failed to delete event');
+            Alert.alert(t('error'), t('delete_event_error'));
         }
     };
 
     const handleLongPress = (eventId) => {
         Alert.alert(
-            'Delete Event',
-            'Are you sure you want to delete this event?',
+            t('delete_event'),
+            t('delete_event_confirmation'),
             [
-                { text: 'Cancel', style: 'cancel' },
-                { text: 'Delete', style: 'destructive', onPress: () => deleteEvent(eventId) }
+                { text: t('cancel'), style: 'cancel' },
+                { text: t('delete'), style: 'destructive', onPress: () => deleteEvent(eventId) }
             ],
             { cancelable: true }
         );
@@ -57,7 +67,7 @@ const EventsScreen = ({ navigation }) => {
     useFocusEffect(
         useCallback(() => {
             fetchEvents();
-        }, [])
+        }, [sortOrder])
     );
 
     const renderItem = ({ item }) => (
@@ -70,6 +80,16 @@ const EventsScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+            <Text style={styles.header}>Мои ивенты</Text>
+            <View style={styles.sortContainer}>
+                <TouchableOpacity onPress={toggleSortOrder} style={styles.sortButton}>
+                    <Ionicons 
+                        name={sortOrder === 'asc' ? 'arrow-up' : 'arrow-down'} 
+                        size={24} 
+                        color="#e28743" 
+                    />
+                </TouchableOpacity>
+            </View>
             {loading ? (
                 <View style={styles.loaderContainer}>
                     <ActivityIndicator size="large" color="#e28743" />
@@ -100,6 +120,27 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f5f5f5',
+        paddingTop: 40,
+    },
+    header: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'left',
+        marginTop: 30,
+        paddingHorizontal: 20
+    },
+    sortContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+    },
+    sortLabel: {
+        fontSize: 16,
+        marginRight: 10,
+    },
+    sortButton: {
+        paddingRight: 5,
     },
     loaderContainer: {
         flex: 1,
@@ -116,7 +157,7 @@ const styles = StyleSheet.create({
         color: 'red',
     },
     listContainer: {
-        paddingTop: 20, // Добавлен отступ сверху для списка
+        paddingTop: 5,
     },
     fab: {
         position: 'absolute',

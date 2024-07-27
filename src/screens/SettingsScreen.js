@@ -8,7 +8,7 @@ import * as FileSystem from 'expo-file-system';
 import { API_URL } from '@env';
 import { DefaultAvatar } from '../assets';
 import { useTranslation } from 'react-i18next';
-import LanguagePickerModal from '../components/LanguagePickerModal'; // Импортируем модальный компонент
+import LanguagePickerModal from '../components/LanguagePickerModal';
 
 const SettingsScreen = () => {
     const { t, i18n } = useTranslation();
@@ -77,8 +77,6 @@ const SettingsScreen = () => {
             quality: 1,
         });
 
-        console.log('ImagePicker result:', result);
-
         if (!result.cancelled && result.assets && result.assets.length > 0) {
             const uri = result.assets[0].uri;
 
@@ -93,8 +91,6 @@ const SettingsScreen = () => {
                     uploadType: FileSystem.FileSystemUploadType.MULTIPART,
                     fieldName: 'avatar',
                 });
-
-                console.log('Upload result:', uploadResult);
 
                 // Check the status code
                 if (uploadResult.status !== 200) {
@@ -125,7 +121,7 @@ const SettingsScreen = () => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.header}>{t('Settings')}</Text>
+            <Text style={styles.header}>{t('settings')}</Text>
 
             <View style={styles.profileContainer}>
                 <View style={styles.avatarContainer}>
@@ -141,37 +137,38 @@ const SettingsScreen = () => {
                 <Text style={styles.email}>{userData?.email}</Text>
             </View>
 
-            <Text style={styles.sectionTitle}>{t('Account settings')}</Text>
+            <Text style={styles.sectionTitle}>{t('menu_header_account_settings')}</Text>
             <TouchableOpacity style={styles.item} onPress={() => handleNavigation('PersonalData')}>
-                <Text style={styles.itemText}>{t('Personal Data')}</Text>
+                <Text style={styles.itemText}>{t('menu_personal_data')}</Text>
                 <Ionicons name="chevron-forward" size={20} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.item} onPress={() => handleNavigation('Notifications')}>
-                <Text style={styles.itemText}>{t('Notifications')}</Text>
+            <TouchableOpacity style={styles.item} onPress={() => handleNavigation('NotificationSettings')}>
+                <Text style={styles.itemText}>{t('menu_notification')}</Text>
                 <Ionicons name="chevron-forward" size={20} color="black" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.item} onPress={() => setLanguageModalVisible(true)}>
-                <Text style={styles.itemText}>{t('Language')}</Text>
+                <Text style={styles.itemText}>{t('menu_language')}</Text>
                 <Ionicons name="chevron-forward" size={20} color="black" />
             </TouchableOpacity>
 
-            <Text style={styles.sectionTitle}>{t('Help & Support')}</Text>
+            <Text style={styles.sectionTitle}>{t('menu_header_help')}</Text>
             <TouchableOpacity style={styles.item} onPress={() => handleNavigation('PrivacyPolicy')}>
-                <Text style={styles.itemText}>{t('Privacy and Policy')}</Text>
+                <Text style={styles.itemText}>{t('menu_privacy')}</Text>
                 <Ionicons name="chevron-forward" size={20} color="black" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.item} onPress={() => handleNavigation('TermsConditions')}>
-                <Text style={styles.itemText}>{t('Terms & Conditions')}</Text>
+                <Text style={styles.itemText}>{t('menu_terms')}</Text>
                 <Ionicons name="chevron-forward" size={20} color="black" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.item} onPress={() => handleNavigation('FAQHelp')}>
-                <Text style={styles.itemText}>{t('FAQ & Help')}</Text>
+                <Text style={styles.itemText}>{t('menu_faq')}</Text>
                 <Ionicons name="chevron-forward" size={20} color="black" />
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
                 <Text style={[styles.itemText, styles.logoutButtonText]}>Logout</Text>
             </TouchableOpacity>
+
 
             <LanguagePickerModal
                 visible={languageModalVisible}
@@ -185,7 +182,7 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
-        paddingVertical: 20,
+        paddingTop: 40,
         backgroundColor: '#f5f5f5',
     },
     header: {

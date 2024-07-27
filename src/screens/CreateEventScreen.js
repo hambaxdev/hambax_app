@@ -1,5 +1,3 @@
-// src/screens/CreateEventScreen.js
-
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Switch, Image } from 'react-native';
 import axios from 'axios';
@@ -7,8 +5,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '@env';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
+import { useTranslation } from 'react-i18next';
 
 const CreateEventScreen = ({ navigation }) => {
+    const { t } = useTranslation();
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [address, setAddress] = useState('');
@@ -25,7 +25,7 @@ const CreateEventScreen = ({ navigation }) => {
     const handlePickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
-            Alert.alert('Permission required', 'Permission to access the media library is required!');
+            Alert.alert(t('permission_required'), t('permission_media_library'));
             return;
         }
 
@@ -40,13 +40,13 @@ const CreateEventScreen = ({ navigation }) => {
             const uri = result.assets[0].uri;
             setImage(uri);
         } else {
-            Alert.alert('Error', 'Failed to pick image. Please try again.');
+            Alert.alert(t('error'), t('failed_pick_image'));
         }
     };
 
     const handleCreateEvent = async () => {
         if (!name || !description || !address || !city || !country || !zipcode || !price) {
-            Alert.alert('Error', 'Please fill in all fields');
+            Alert.alert(t('error'), t('fill_all_fields'));
             return;
         }
 
@@ -81,16 +81,16 @@ const CreateEventScreen = ({ navigation }) => {
             });
 
             if (response.status === 201) {
-                Alert.alert('Success', 'Event created successfully');
+                Alert.alert(t('success'), t('event_created_successfully'));
                 navigation.goBack();
             } else {
-                Alert.alert('Error', 'Failed to create event');
+                Alert.alert(t('error'), t('create_event_failed'));
             }
         } catch (error) {
             if (error.response) {
-                Alert.alert('Error', `Failed to create event: ${error.response.data}`);
+                Alert.alert(t('error'), `${t('create_event_failed')}: ${error.response.data}`);
             } else {
-                Alert.alert('Error', 'Failed to create event. Please try again.');
+                Alert.alert(t('error'), t('create_event_retry'));
             }
         }
     };
@@ -103,55 +103,55 @@ const CreateEventScreen = ({ navigation }) => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>Create Event</Text>
+            <Text style={styles.title}>{t('create_event')}</Text>
 
             <TextInput
                 style={styles.input}
-                placeholder="Name"
+                placeholder={t('name')}
                 value={name}
                 onChangeText={setName}
             />
             <TextInput
                 style={styles.input}
-                placeholder="Description"
+                placeholder={t('description')}
                 value={description}
                 onChangeText={setDescription}
                 multiline
             />
             <TextInput
                 style={styles.input}
-                placeholder="Address"
+                placeholder={t('address')}
                 value={address}
                 onChangeText={setAddress}
             />
             <TextInput
                 style={styles.input}
-                placeholder="City"
+                placeholder={t('city')}
                 value={city}
                 onChangeText={setCity}
             />
             <TextInput
                 style={styles.input}
-                placeholder="Country"
+                placeholder={t('country')}
                 value={country}
                 onChangeText={setCountry}
             />
             <TextInput
                 style={styles.input}
-                placeholder="Zipcode"
+                placeholder={t('zipcode')}
                 value={zipcode}
                 onChangeText={setZipcode}
             />
             <TextInput
                 style={styles.input}
-                placeholder="Price"
+                placeholder={t('price')}
                 value={price}
                 onChangeText={setPrice}
                 keyboardType="numeric"
             />
 
             <View style={styles.switchContainer}>
-                <Text>Limit Tickets</Text>
+                <Text>{t('limit_tickets')}</Text>
                 <Switch
                     value={ticketCountLimited}
                     onValueChange={(value) => setTicketCountLimited(value)}
@@ -161,7 +161,7 @@ const CreateEventScreen = ({ navigation }) => {
             {ticketCountLimited && (
                 <TextInput
                     style={styles.input}
-                    placeholder="Ticket Count"
+                    placeholder={t('ticket_count')}
                     value={ticketCount}
                     onChangeText={setTicketCount}
                     keyboardType="numeric"
@@ -171,7 +171,7 @@ const CreateEventScreen = ({ navigation }) => {
             <TouchableOpacity onPress={() => setShowDatePicker(true)}>
                 <TextInput
                     style={styles.input}
-                    placeholder="Event Date"
+                    placeholder={t('event_date')}
                     value={date.toLocaleDateString()}
                     editable={false}
                 />
@@ -190,12 +190,12 @@ const CreateEventScreen = ({ navigation }) => {
                 {image ? (
                     <Image source={{ uri: image }} style={styles.image} />
                 ) : (
-                    <Text>Select Image</Text>
+                    <Text>{t('select_image')}</Text>
                 )}
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button} onPress={handleCreateEvent}>
-                <Text style={styles.buttonText}>Create Event</Text>
+                <Text style={styles.buttonText}>{t('create_event')}</Text>
             </TouchableOpacity>
         </ScrollView>
     );

@@ -4,7 +4,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen';
 import EventsScreen from '../screens/EventsScreen';
-import FeedScreen from '../screens/FeedScreen'; // Создайте или используйте ваш компонент для ленты
+import FeedScreen from '../screens/FeedScreen';
+import ContentMakerProfileScreen from '../screens/ContentMakerProfileScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -31,7 +32,7 @@ const BottomTabNavigator = () => {
             })}
         >
             <Tab.Screen name="Feed" component={FeedScreen} options={{ title: 'Лента', headerShown: false  }} />
-            <Tab.Screen name="EventmakerHome" component={EventsScreen} options={{ title: 'Ивентмейкер', headerShown: false  }} />
+            <Tab.Screen name="EventmakerHome" component={ContentMakerProfileScreen} options={{ title: 'Ивентмейкер', headerShown: false  }} />
             <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'Домашняя', headerShown: false  }} />
         </Tab.Navigator>
     );
