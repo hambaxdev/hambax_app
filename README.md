@@ -1,6 +1,4 @@
-Here is a comprehensive README for the repository:
 
----
 
 # Hambax App
 
