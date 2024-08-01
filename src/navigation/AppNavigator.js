@@ -19,13 +19,29 @@ import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 import ResetPasswordScreen from '../screens/auth/ResetPasswordScreen';
 import ResetCodeScreen from '../screens/auth/ResetCodeScreen';
 import PersonalDataScreen from '../screens/userData/PersonalDataScreen';
-// import BottomTabNavigator from './BottomTabNavigator'; // Закомментировано
 import { API_URL } from '@env';
 import CreateEventScreen from '../screens/CreateEventScreen';
 import EditEventScreen from '../screens/EditEventScreen';
 import NotificationSettingsScreen from '../screens/NotificationSettingsScreen';
+import * as Linking from 'expo-linking';
 
 const Stack = createStackNavigator();
+
+const linking = {
+    prefixes: ['hambax://', 'https://*.hambax.com'],
+    config: {
+        screens: {
+            Home: 'home',
+            Onboarding: {
+                screens: {
+                    Reauth: 'onboarding/reauth',
+                    Complete: 'onboarding/complete'
+                }
+            },
+            // другие экраны
+        },
+    },
+};
 
 const AppNavigator = () => {
     const navigationRef = useRef();
@@ -88,7 +104,7 @@ const AppNavigator = () => {
     }, []);
 
     return (
-        <NavigationContainer ref={navigationRef}>
+        <NavigationContainer ref={navigationRef} linking={linking}>
             <Stack.Navigator initialRouteName="Intro">
                 <Stack.Screen name="Intro" component={IntroScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />

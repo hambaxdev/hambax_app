@@ -83,8 +83,11 @@ const RegisterEventmakerScreen = ({ navigation }) => {
                 phone,
                 website,
             });
+
+            navigation.navigate('EmailVerification', { onboardingUrl: response.data.onboardingUrl });
+
             await AsyncStorage.setItem('token', response.data.token);
-            navigation.navigate('EmailVerification');
+            navigation.navigate('EmailVerification', { onboardingUrl });
         } catch (error) {
             console.error('Registration error:', error);
             alert('Регистрация не удалась');

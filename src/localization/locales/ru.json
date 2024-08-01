@@ -129,5 +129,8 @@
     "notification_settings": "Настройки уведомлений",
     "all_notifications": "Все уведомления",
     "ticket_purchase_notifications": "Уведомления о покупке билетов",
-    "statistical_notifications": "Статистические уведомления"
+    "statistical_notifications": "Статистические уведомления",
+    "complete_onboarding": "Завершите регистрацию в Stripe",
+    "please_verify_email":"Пожалуйста, верифицируйте ваш email",
+    "resend_verification_email": "Отправить письмо для повторной верификации"
 }

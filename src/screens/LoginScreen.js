@@ -75,7 +75,11 @@ const LoginScreen = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
 
-            <VerificationModal visible={modalVisible} onClose={() => setModalVisible(false)} />
+            <VerificationModal
+                visible={modalVisible}
+                onClose={() => setModalVisible(false)}
+                email={email}
+            />
         </View>
     );
 };

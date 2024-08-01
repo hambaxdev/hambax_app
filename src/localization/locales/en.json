@@ -116,5 +116,8 @@
     "notification_settings": "Notification Settings",
     "all_notifications": "All Notifications",
     "ticket_purchase_notifications": "Ticket Purchase Notifications",
-    "statistical_notifications": "Statistical Notifications"
+    "statistical_notifications": "Statistical Notifications",
+    "complete_onboarding": "Complete Stripe onboarding",
+    "please_verify_email": "Please verify your email",
+    "resend_verification_email": "Resend verification email"
 }

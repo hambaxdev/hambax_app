@@ -1,14 +1,26 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-const EmailVerificationScreen = ({ navigation }) => {
+const EmailVerificationScreen = ({ route, navigation }) => {
     const { t } = useTranslation();
+    const { onboardingUrl } = route.params;
+
+    const handleOnboarding = () => {
+        if (onboardingUrl) {
+            Linking.openURL(onboardingUrl);
+        }
+    };
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{t('verification_email_sent')}</Text>
             <Text style={styles.message}>{t('please_check_email')}</Text>
+            {onboardingUrl && (
+                <TouchableOpacity style={styles.button} onPress={handleOnboarding}>
+                    <Text style={styles.buttonText}>{t('complete_onboarding')}</Text>
+                </TouchableOpacity>
+            )}
             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
                 <Text style={styles.buttonText}>{t('back_to_login')}</Text>
             </TouchableOpacity>
@@ -43,6 +55,7 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 25,
         alignItems: 'center',
+        marginBottom: 10,
     },
     buttonText: {
         color: '#fff',

@@ -1,7 +1,21 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Modal, Alert } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import axios from 'axios';
+import { API_URL } from '@env';
 
-const VerificationModal = ({ visible, onClose }) => {
+const VerificationModal = ({ visible, onClose, email }) => {
+    const { t } = useTranslation();
+
+    const handleResendVerification = async () => {
+        try {
+            await axios.post(`${API_URL}/api/auth/resend-verification`, { email });
+            Alert.alert(t('success'), t('verification_email_sent'));
+        } catch (error) {
+            Alert.alert(t('error'), t('verification_email_send_failed'));
+        }
+    };
+
     return (
         <Modal
             animationType="slide"
@@ -11,12 +25,18 @@ const VerificationModal = ({ visible, onClose }) => {
         >
             <View style={styles.modalContainer}>
                 <View style={styles.modalView}>
-                    <Text style={styles.modalText}>Пожалуйста, верифицируйте ваш email</Text>
+                    <Text style={styles.modalText}>{t('please_verify_email')}</Text>
+                    <TouchableOpacity
+                        style={[styles.button, styles.buttonClose]}
+                        onPress={handleResendVerification}
+                    >
+                        <Text style={styles.textStyle}>{t('resend_verification_email')}</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity
                         style={[styles.button, styles.buttonClose]}
                         onPress={onClose}
                     >
-                        <Text style={styles.textStyle}>Закрыть</Text>
+                        <Text style={styles.textStyle}>{t('close')}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -53,6 +73,7 @@ const styles = StyleSheet.create({
     },
     buttonClose: {
         backgroundColor: '#e28743',
+        marginTop: 10,
     },
     textStyle: {
         color: 'white',
