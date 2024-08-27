@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Switch, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Switch, Image, Platform } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '@env';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as ImagePicker from 'expo-image-picker';
 import { useTranslation } from 'react-i18next';
+import AgeRestrictionSelector from '../components/AgeRestrictionSelector';
 
 const CreateEventScreen = ({ navigation }) => {
     const { t } = useTranslation();
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
+    const [location, setLocation] = useState('');
     const [address, setAddress] = useState('');
     const [city, setCity] = useState('');
     const [country, setCountry] = useState('');
@@ -19,8 +21,22 @@ const CreateEventScreen = ({ navigation }) => {
     const [ticketCountLimited, setTicketCountLimited] = useState(false);
     const [ticketCount, setTicketCount] = useState('');
     const [date, setDate] = useState(new Date());
-    const [showDatePicker, setShowDatePicker] = useState(false);
     const [image, setImage] = useState(null);
+    const [selectedAgeRestriction, setSelectedAgeRestriction] = useState(null);
+    const [isDateTimePickerVisible, setDateTimePickerVisibility] = useState(false);
+
+    const showDateTimePicker = () => {
+        setDateTimePickerVisibility(true);
+    };
+
+    const hideDateTimePicker = () => {
+        setDateTimePickerVisibility(false);
+    };
+
+    const handleDateTimeConfirm = (selectedDate) => {
+        setDate(selectedDate);
+        hideDateTimePicker();
+    }
 
     const handlePickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -55,6 +71,7 @@ const CreateEventScreen = ({ navigation }) => {
             const formData = new FormData();
             formData.append('name', name);
             formData.append('description', description);
+            formData.append('location', location);
             formData.append('address', address);
             formData.append('city', city);
             formData.append('country', country);
@@ -63,6 +80,7 @@ const CreateEventScreen = ({ navigation }) => {
             formData.append('ticketCountLimited', ticketCountLimited);
             formData.append('ticketCount', ticketCountLimited ? ticketCount : null);
             formData.append('date', date.toISOString());
+            formData.append('ageRestrictionId', selectedAgeRestriction);
 
             if (image) {
                 const localUri = image;
@@ -95,12 +113,6 @@ const CreateEventScreen = ({ navigation }) => {
         }
     };
 
-    const handleDateChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
-        setShowDatePicker(false);
-        setDate(currentDate);
-    };
-
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <Text style={styles.title}>{t('create_event')}</Text>
@@ -123,6 +135,12 @@ const CreateEventScreen = ({ navigation }) => {
                 placeholder={t('address')}
                 value={address}
                 onChangeText={setAddress}
+            />
+            <TextInput
+                style={styles.input}
+                placeholder={t('location')}
+                value={location}
+                onChangeText={setLocation}
             />
             <TextInput
                 style={styles.input}
@@ -150,6 +168,12 @@ const CreateEventScreen = ({ navigation }) => {
                 keyboardType="numeric"
             />
 
+            {/* Компонент выбора возрастного ограничения */}
+            <AgeRestrictionSelector
+                selectedAgeRestriction={selectedAgeRestriction}
+                onSelectAgeRestriction={(value) => setSelectedAgeRestriction(value)}
+            />
+
             <View style={styles.switchContainer}>
                 <Text>{t('limit_tickets')}</Text>
                 <Switch
@@ -168,23 +192,21 @@ const CreateEventScreen = ({ navigation }) => {
                 />
             )}
 
-            <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+            <TouchableOpacity onPress={showDateTimePicker}>
                 <TextInput
                     style={styles.input}
                     placeholder={t('event_date')}
-                    value={date.toLocaleDateString()}
+                    value={date.toLocaleString()} // Формат с датой и временем
                     editable={false}
                 />
             </TouchableOpacity>
 
-            {showDatePicker && (
-                <DateTimePicker
-                    value={date}
-                    mode="date"
-                    display="default"
-                    onChange={handleDateChange}
-                />
-            )}
+            <DateTimePickerModal
+                isVisible={isDateTimePickerVisible}
+                mode="datetime" // Используем datetime
+                onConfirm={handleDateTimeConfirm}
+                onCancel={hideDateTimePicker}
+            />
 
             <TouchableOpacity onPress={handlePickImage} style={styles.imagePicker}>
                 {image ? (

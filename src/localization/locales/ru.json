@@ -132,5 +132,11 @@
     "statistical_notifications": "Статистические уведомления",
     "complete_onboarding": "Завершите регистрацию в Stripe",
     "please_verify_email":"Пожалуйста, верифицируйте ваш email",
-    "resend_verification_email": "Отправить письмо для повторной верификации"
+    "resend_verification_email": "Отправить письмо для повторной верификации",
+    "upcomingEvents": "Предстоящие ивенты",
+    "socialLinks_facebook":"facebook",
+    "socialLinks_instagram":"instagram",
+    "socialLinks_twitter":"twitter",
+    "socialLinks_linkedin":"linkedin",
+    "socialLinks_youtube":"youtube"
 }

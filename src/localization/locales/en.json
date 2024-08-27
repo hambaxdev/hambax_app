@@ -119,5 +119,11 @@
     "statistical_notifications": "Statistical Notifications",
     "complete_onboarding": "Complete Stripe onboarding",
     "please_verify_email": "Please verify your email",
-    "resend_verification_email": "Resend verification email"
+    "resend_verification_email": "Resend verification email",
+    "upcomingEvents": "upcoming Events",
+    "socialLinks_facebook":"facebook",
+    "socialLinks_instagram":"instagram",
+    "socialLinks_twitter":"twitter",
+    "socialLinks_linkedin":"linkedin",
+    "socialLinks_youtube":"youtube"
 }

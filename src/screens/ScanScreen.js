@@ -24,11 +24,12 @@ const ScanScreen = () => {
     const handleBarCodeScanned = async ({ type, data }) => {
         setScanned(true);
 
+        console.log(data);
         try {
             const token = await AsyncStorage.getItem('token');
             const response = await axios.post(
-                `${API_URL}/api/tickets/check_qr`,
-                { qr_hash: data },
+                `${API_URL}/api/ticket/validate-ticket`,
+                { qrHash: data },
                 { headers: { 'x-access-token': token } }
             );
 

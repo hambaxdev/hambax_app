@@ -5,11 +5,12 @@ import { useTranslation } from 'react-i18next';
 
 const EventCard = ({ event, onLongPress, onPress }) => {
     const { t } = useTranslation();
+    console.log( `${API_URL}/api/images?path=${encodeURIComponent(event.imageUrl)}` );
 
     return (
         <TouchableOpacity onPress={onPress} onLongPress={onLongPress}>
             <View style={styles.card}>
-                <Image source={{ uri: `${API_URL}${event.imageUrl}` }} style={styles.image} />
+            <Image source={{ uri: `${API_URL}/api/image?path=${encodeURIComponent(event.imageUrl)}` }} style={styles.image} />
                 <View style={styles.info}>
                     <Text style={styles.name}>{event.name}</Text>
                     <Text style={styles.date}>{new Date(event.date).toLocaleDateString()}</Text>
@@ -17,6 +18,9 @@ const EventCard = ({ event, onLongPress, onPress }) => {
                     <Text style={styles.address}>{`${event.address}, ${event.city}, ${event.country}, ${event.zipcode}`}</Text>
                     <Text style={styles.price}>{`${event.price}€`}</Text>
                     {event.ticketCountLimited && <Text style={styles.ticketCount}>{`${t('tickets')}: ${event.ticketCount}`}</Text>}
+                    <Text style={styles.landingPageLink}>
+                        {`${API_URL}/landing/${event._id}`}
+                    </Text>
                 </View>
             </View>
         </TouchableOpacity>
@@ -71,6 +75,10 @@ const styles = StyleSheet.create({
     ticketCount: {
         fontSize: 14,
         color: 'gray',
+    },
+    landingPageLink: {
+        color: 'blue',
+        marginTop: 10,
     },
 });
 

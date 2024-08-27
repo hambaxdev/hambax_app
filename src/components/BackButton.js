@@ -14,16 +14,12 @@ const BackButton = ({ onPress, style, iconStyle }) => {
 
 const styles = StyleSheet.create({
     button: {
-        position: 'absolute',
-        top: 70,
-        left: 20,
         width: 40,
         height: 40,
         backgroundColor: '#e28743',
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 1,
     },
     icon: {
         width: 20,

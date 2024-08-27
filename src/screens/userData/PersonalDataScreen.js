@@ -6,9 +6,11 @@ import { API_URL } from '@env';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EditModal from '../../components/EditModal';
 import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
 
 const PersonalDataScreen = () => {
     const { t } = useTranslation();
+    const navigation = useNavigation();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -62,7 +64,10 @@ const PersonalDataScreen = () => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.header}>{t('personal_info')}</Text>
+            <View style={styles.headerContainer}>
+                {/* Заголовок экрана */}
+                <Text style={styles.header}>{t('personal_info')}</Text>
+            </View>
 
             <View style={styles.card}>
                 <View style={styles.cardHeader}>
@@ -100,33 +105,14 @@ const PersonalDataScreen = () => {
                 </View>
             </View>
 
-            <View style={styles.card}>
-                <View style={styles.cardHeader}>
-                    <Text style={styles.sectionTitle}>{t('organization')}</Text>
-                    <TouchableOpacity onPress={() => handleEdit(['organization.organizationName', 'organization.taxNumber', 'organization.address', 'organization.phone', 'organization.website'])}>
-                        <Ionicons name="pencil" size={20} color="black" />
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.cardContent}>
-                    <Text style={styles.label}>{t('organization_name')}:</Text>
-                    <Text style={styles.value}>{data.organization?.organizationName}</Text>
-                    <Text style={styles.label}>{t('tax_number')}:</Text>
-                    <Text style={styles.value}>{data.organization?.taxNumber}</Text>
-                    <Text style={styles.label}>{t('address')}:</Text>
-                    <Text style={styles.value}>{data.organization?.address}</Text>
-                    <Text style={styles.label}>{t('phone')}:</Text>
-                    <Text style={styles.value}>{data.organization?.phone}</Text>
-                    <Text style={styles.label}>{t('website')}:</Text>
-                    <Text style={styles.value}>{data.organization?.website}</Text>
-                </View>
-            </View>
-
             <EditModal
                 visible={editModalVisible}
                 fields={editFields}
                 data={data}
                 onClose={() => setEditModalVisible(false)}
                 onSave={handleSave}
+                apiEndpoint={`/api/user/update-profile`}
+                requestMethod="PUT"
             />
         </ScrollView>
     );
@@ -145,6 +131,18 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         marginBottom: 40,
         marginTop: 20,
+    },
+    headerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 40,
+        marginTop: 20,
+    },
+    header: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        flex: 1, // Заголовок занимает оставшееся пространство
+        textAlign: 'center', // Центрируем заголовок
     },
     card: {
         backgroundColor: '#fff',

@@ -29,10 +29,6 @@ const HomeScreen = ({ navigation }) => {
                     <Card icon={StatisticsIcon} text={t('statistics')} onPress={() => navigation.navigate('Statistics')} />
                     <Card icon={SettingsIcon} text={t('settings')} onPress={() => navigation.navigate('Settings')} />
                 </View>
-                <View style={styles.row}>
-                    <Card icon={MessagesIcon} text={t('messages')} onPress={() => navigation.navigate('Messages')} />
-                    <Card icon={SupportIcon} text={t('support')} onPress={() => navigation.navigate('Support')} />
-                </View>
             </View>
         </View>
     );
@@ -44,7 +40,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
     },
     header: {
-        height: '35%',
+        height: '50%',
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative',

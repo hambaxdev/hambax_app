@@ -35,6 +35,18 @@
             "BROWSABLE",
             "DEFAULT"
           ]
+        },
+        {
+          "action": "VIEW",
+          "data": {
+            "scheme": "https",
+            "host": "*.hambax.com",
+            "pathPrefix": "/onboarding/complete"
+          },
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },

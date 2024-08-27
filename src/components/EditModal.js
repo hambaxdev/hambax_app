@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput, Alert, ScrollView } from 'react-native';
 import axios from '../utils/axiosInstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '@env';
 import CountryPickerModal from './CountryPickerModal';
 import { useTranslation } from 'react-i18next';
 
-const EditModal = ({ visible, fields, data, onClose, onSave }) => {
+const EditModal = ({ visible, fields, data, onClose, onSave, apiEndpoint, requestMethod = 'PUT' }) => {
     const { t } = useTranslation();
     const [formData, setFormData] = useState({});
     const [initialData, setInitialData] = useState({});
@@ -64,7 +64,10 @@ const EditModal = ({ visible, fields, data, onClose, onSave }) => {
 
         try {
             const token = await AsyncStorage.getItem('accessToken');
-            const response = await axios.put(`${API_URL}/api/user/update-profile`, changedFields, {
+            const response = await axios({
+                method: requestMethod,
+                url: `${API_URL}${apiEndpoint}`,
+                data: changedFields,
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -97,39 +100,41 @@ const EditModal = ({ visible, fields, data, onClose, onSave }) => {
         >
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
-                    <Text style={styles.title}>{t('edit_information')}</Text>
-                    {fields.map((field) => (
-                        <View key={field} style={styles.inputContainer}>
-                            <Text style={styles.label}>{t(field.split('.').join('_'))}:</Text>
-                            {field === 'address.country' ? (
-                                <TouchableOpacity onPress={() => setIsCountryPickerVisible(true)}>
+                    <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                        <Text style={styles.title}>{t('edit_information')}</Text>
+                        {fields.map((field) => (
+                            <View key={field} style={styles.inputContainer}>
+                                <Text style={styles.label}>{t(field.split('.').join('_'))}:</Text>
+                                {field === 'address.country' ? (
+                                    <TouchableOpacity onPress={() => setIsCountryPickerVisible(true)}>
+                                        <TextInput
+                                            style={styles.input}
+                                            value={formData[field]}
+                                            editable={false}
+                                        />
+                                    </TouchableOpacity>
+                                ) : (
                                     <TextInput
                                         style={styles.input}
                                         value={formData[field]}
-                                        editable={false}
+                                        onChangeText={(value) => handleChange(field, value)}
                                     />
-                                </TouchableOpacity>
-                            ) : (
-                                <TextInput
-                                    style={styles.input}
-                                    value={formData[field]}
-                                    onChangeText={(value) => handleChange(field, value)}
-                                />
-                            )}
-                        </View>
-                    ))}
-                    <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-                        <Text style={styles.saveButtonText}>{t('save')}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                        <Text style={styles.closeButtonText}>{t('close')}</Text>
-                    </TouchableOpacity>
+                                )}
+                            </View>
+                        ))}
+                        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+                            <Text style={styles.saveButtonText}>{t('save')}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                            <Text style={styles.closeButtonText}>{t('close')}</Text>
+                        </TouchableOpacity>
+                    </ScrollView>
+                    <CountryPickerModal
+                        visible={isCountryPickerVisible}
+                        onClose={() => setIsCountryPickerVisible(false)}
+                        onSelectCountry={handleCountrySelect}
+                    />
                 </View>
-                <CountryPickerModal
-                    visible={isCountryPickerVisible}
-                    onClose={() => setIsCountryPickerVisible(false)}
-                    onSelectCountry={handleCountrySelect}
-                />
             </View>
         </Modal>
     );
@@ -147,6 +152,9 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         padding: 20,
+    },
+    scrollViewContent: {
+        paddingBottom: 20,
     },
     title: {
         fontSize: 24,

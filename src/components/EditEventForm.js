@@ -1,20 +1,23 @@
-// src/components/EditEventForm.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Switch, Image, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '@env';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as ImagePicker from 'expo-image-picker';
 import { useTranslation } from 'react-i18next';
+import AgeRestrictionSelector from '../components/AgeRestrictionSelector';
 
 const EditEventForm = ({ eventId, navigation }) => {
     const { t } = useTranslation();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [ageRestrictions, setAgeRestrictions] = useState([]);
+    const [selectedAgeRestriction, setSelectedAgeRestriction] = useState(null);
     const [form, setForm] = useState({
         name: '',
         description: '',
+        location: '',
         address: '',
         city: '',
         country: '',
@@ -25,7 +28,7 @@ const EditEventForm = ({ eventId, navigation }) => {
         date: new Date(),
         image: null,
     });
-    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [isDateTimePickerVisible, setDateTimePickerVisibility] = useState(false);
     const [retry, setRetry] = useState(false);
     const [uploading, setUploading] = useState(false);
 
@@ -33,15 +36,20 @@ const EditEventForm = ({ eventId, navigation }) => {
         const fetchEvent = async () => {
             try {
                 const token = await AsyncStorage.getItem('accessToken');
-                const response = await axios.get(`${API_URL}/api/events/${eventId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                const response = await axios.get(`${API_URL}/api/events/${eventId}`);
                 const event = response.data;
+
+                // Получаем возрастные ограничения
+                const ageRestrictionResponse = await axios.get(`${API_URL}/api/age-restriction`);
+                setAgeRestrictions(ageRestrictionResponse.data);
+
+                // Устанавливаем данные и выбранное возрастное ограничение
+                setSelectedAgeRestriction(event.ageRestrictionId);
+
                 setForm({
                     name: event.name,
                     description: event.description,
+                    location: event.location,
                     address: event.address,
                     city: event.city,
                     country: event.country,
@@ -84,10 +92,9 @@ const EditEventForm = ({ eventId, navigation }) => {
         }
     };
 
-    const handleDateChange = (event, selectedDate) => {
-        const currentDate = selectedDate || form.date;
-        setShowDatePicker(false);
-        setForm({ ...form, date: currentDate });
+    const handleDateTimeConfirm = (selectedDate) => {
+        setForm({ ...form, date: selectedDate });
+        setDateTimePickerVisibility(false);
     };
 
     const handleChange = (name, value) => {
@@ -95,74 +102,58 @@ const EditEventForm = ({ eventId, navigation }) => {
     };
 
     const handleSubmit = async () => {
-        if (!form.name || !form.description || !form.address || !form.city || !form.country || !form.zipcode || !form.price) {
+        if (!form.name || !form.description || !form.location || !form.address || !form.city || !form.country || !form.zipcode || !form.price) {
             Alert.alert(t('error'), t('fill_all_fields'));
             return;
         }
 
         setUploading(true);
-        console.log('submitted');
 
-        let attempts = 0;
-        const maxAttempts = 5;
+        try {
+            const token = await AsyncStorage.getItem('accessToken');
+            const formData = new FormData();
+            formData.append('name', form.name);
+            formData.append('description', form.description);
+            formData.append('location', form.location);
+            formData.append('address', form.address);
+            formData.append('city', form.city);
+            formData.append('country', form.country);
+            formData.append('zipcode', form.zipcode);
+            formData.append('price', form.price);
+            formData.append('ticketCountLimited', form.ticketCountLimited);
+            formData.append('ticketCount', form.ticketCountLimited ? form.ticketCount : null);
+            formData.append('date', form.date.toISOString());
+            formData.append('ageRestrictionId', selectedAgeRestriction); // Добавляем ageRestrictionId
 
-        while (attempts < maxAttempts) {
-            try {
-                const token = await AsyncStorage.getItem('accessToken');
-                const formData = new FormData();
-                formData.append('name', form.name);
-                formData.append('description', form.description);
-                formData.append('address', form.address);
-                formData.append('city', form.city);
-                formData.append('country', form.country);
-                formData.append('zipcode', form.zipcode);
-                formData.append('price', form.price);
-                formData.append('ticketCountLimited', form.ticketCountLimited);
-                formData.append('ticketCount', form.ticketCountLimited ? form.ticketCount : null);
-                formData.append('date', form.date.toISOString());
+            if (form.image && !form.image.startsWith('http')) {
+                const localUri = form.image;
+                const filename = localUri.split('/').pop();
+                const match = /\.(\w+)$/.exec(filename);
+                const type = match ? `image/${match[1]}` : `image`;
 
-                if (form.image && !form.image.startsWith('http')) {
-                    const localUri = form.image;
-                    const filename = localUri.split('/').pop();
-                    const match = /\.(\w+)$/.exec(filename);
-                    const type = match ? `image/${match[1]}` : `image`;
-
-                    formData.append('image', { uri: localUri, name: filename, type });
-                }
-
-                console.log('FormData being sent:', formData);
-
-                const response = await axios.put(`${API_URL}/api/events/update/${eventId}`, formData, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-
-                if (response.status === 200) {
-                    Alert.alert(t('success'), t('event_updated_successfully'));
-                    setUploading(false);
-                    navigation.goBack();
-                    return;
-                } else {
-                    attempts += 1;
-                    console.log(`Attempt ${attempts} failed`);
-                }
-            } catch (error) {
-                attempts += 1;
-                console.log(`Attempt ${attempts} failed with error:`, error.message);
+                formData.append('image', { uri: localUri, name: filename, type });
             }
-        }
 
-        setUploading(false);
-        Alert.alert(t('error'), t('update_event_failed_attempts'));
+            const response = await axios.put(`${API_URL}/api/events/update/${eventId}`, formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (response.status === 200) {
+                Alert.alert(t('success'), t('event_updated_successfully'));
+                setUploading(false);
+                navigation.goBack();
+            } else {
+                Alert.alert(t('error'), t('update_event_failed'));
+            }
+        } catch (error) {
+            // Alert.alert(t('error'), t('update_event_failed_retry'));
+        } finally {
+            setUploading(false);
+        }
     };
-
-    useEffect(() => {
-        if (retry) {
-            handleSubmit();
-        }
-    }, [retry]);
 
     if (loading || uploading) {
         return (
@@ -199,6 +190,12 @@ const EditEventForm = ({ eventId, navigation }) => {
             />
             <TextInput
                 style={styles.input}
+                placeholder={t('location')}
+                value={form.location}
+                onChangeText={(value) => handleChange('location', value)}
+            />
+            <TextInput
+                style={styles.input}
                 placeholder={t('address')}
                 value={form.address}
                 onChangeText={(value) => handleChange('address', value)}
@@ -229,6 +226,13 @@ const EditEventForm = ({ eventId, navigation }) => {
                 keyboardType="numeric"
             />
 
+            {/* Компонент выбора возрастного ограничения */}
+            <AgeRestrictionSelector
+                ageRestrictions={ageRestrictions}
+                selectedAgeRestriction={selectedAgeRestriction}
+                onSelectAgeRestriction={setSelectedAgeRestriction}
+            />
+
             <View style={styles.switchContainer}>
                 <Text>{t('limit_tickets')}</Text>
                 <Switch
@@ -247,23 +251,21 @@ const EditEventForm = ({ eventId, navigation }) => {
                 />
             )}
 
-            <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+            <TouchableOpacity onPress={() => setDateTimePickerVisibility(true)}>
                 <TextInput
                     style={styles.input}
                     placeholder={t('event_date')}
-                    value={form.date.toLocaleDateString()}
+                    value={form.date.toLocaleString()} // Отображаем дату и время
                     editable={false}
                 />
             </TouchableOpacity>
 
-            {showDatePicker && (
-                <DateTimePicker
-                    value={form.date}
-                    mode="date"
-                    display="default"
-                    onChange={handleDateChange}
-                />
-            )}
+            <DateTimePickerModal
+                isVisible={isDateTimePickerVisible}
+                mode="datetime" // Устанавливаем режим datetime
+                onConfirm={handleDateTimeConfirm}
+                onCancel={() => setDateTimePickerVisibility(false)}
+            />
 
             <TouchableOpacity onPress={handlePickImage} style={styles.imagePicker}>
                 {form.image ? (

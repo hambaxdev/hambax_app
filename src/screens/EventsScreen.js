@@ -47,6 +47,8 @@ const EventsScreen = ({ navigation }) => {
                 },
             });
             setEvents(events.filter(event => event._id !== eventId));
+
+            console.log('Test');
         } catch (error) {
             Alert.alert(t('error'), t('delete_event_error'));
         }

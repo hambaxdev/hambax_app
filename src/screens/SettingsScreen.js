@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { Image } from 'expo-image';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -43,8 +44,6 @@ const SettingsScreen = () => {
     
         fetchUserData();
     }, []);
-    
-    
 
     const handleLogout = async () => {
         try {
@@ -92,7 +91,6 @@ const SettingsScreen = () => {
                     fieldName: 'avatar',
                 });
 
-                // Check the status code
                 if (uploadResult.status !== 200) {
                     console.error('Failed to upload avatar, server responded with:', uploadResult.body);
                     Alert.alert('Error', 'Failed to upload avatar. Please try again.');
@@ -121,13 +119,18 @@ const SettingsScreen = () => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.header}>{t('settings')}</Text>
+            <View style={styles.headerContainer}>
+
+                {/* Заголовок настроек */}
+                <Text style={styles.header}>{t('settings')}</Text>
+            </View>
 
             <View style={styles.profileContainer}>
                 <View style={styles.avatarContainer}>
                     <Image
-                        source={userData?.avatar ? { uri: `${API_URL}${userData.avatar}` } : DefaultAvatar}
+                        source={userData?.avatar ? { uri: `${API_URL}/api/image?path=${encodeURIComponent(userData.avatar)}` } : DefaultAvatar}
                         style={styles.avatar}
+                        cachePolicy="immutable"
                     />
                     <TouchableOpacity style={styles.editIcon} onPress={handleImagePick}>
                         <Ionicons name="pencil" size={20} color="white" />
@@ -169,7 +172,6 @@ const SettingsScreen = () => {
                 <Text style={[styles.itemText, styles.logoutButtonText]}>Logout</Text>
             </TouchableOpacity>
 
-
             <LanguagePickerModal
                 visible={languageModalVisible}
                 onClose={() => setLanguageModalVisible(false)}
@@ -185,14 +187,20 @@ const styles = StyleSheet.create({
         paddingTop: 40,
         backgroundColor: '#f5f5f5',
     },
+
+    headerContainer: {
+        flexDirection: 'row', // Располагаем кнопку и заголовок в одну линию
+        alignItems: 'center', // Центрируем элементы по вертикали
+        paddingHorizontal: 20,
+        marginBottom: 20,
+    },
     header: {
         fontSize: 24,
         fontWeight: 'bold',
-        textAlign: 'left',
-        marginBottom: 40,
-        marginTop: 20,
-        paddingHorizontal: 20
+        flex: 1, // Заголовок занимает оставшееся пространство
+        textAlign: 'center', // Центрируем заголовок в доступном пространстве
     },
+   
     profileContainer: {
         alignItems: 'center',
         marginBottom: 30,

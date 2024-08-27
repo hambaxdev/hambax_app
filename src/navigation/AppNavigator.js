@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import IntroScreen from '../screens/introduction/IntroScreen';
@@ -23,9 +24,13 @@ import { API_URL } from '@env';
 import CreateEventScreen from '../screens/CreateEventScreen';
 import EditEventScreen from '../screens/EditEventScreen';
 import NotificationSettingsScreen from '../screens/NotificationSettingsScreen';
+import OrganizationScreen from '../screens/OrganizationScreen';
 import * as Linking from 'expo-linking';
+import { Ionicons } from '@expo/vector-icons';
+import BackButton from '../components/BackButton'; // Импортируем BackButton
 
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
 const linking = {
     prefixes: ['hambax://', 'https://*.hambax.com'],
@@ -38,9 +43,34 @@ const linking = {
                     Complete: 'onboarding/complete'
                 }
             },
-            // другие экраны
         },
     },
+};
+
+// Нижнее меню
+const BottomTabNavigator = () => {
+    return (
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
+
+                    if (route.name === 'Home') {
+                        iconName = focused ? 'home' : 'home-outline';
+                    } else if (route.name === 'Organization') {
+                        iconName = focused ? 'business' : 'business-outline';
+                    }
+
+                    return <Ionicons name={iconName} size={size} color={color} />;
+                },
+                tabBarActiveTintColor: '#2f95dc',
+                tabBarInactiveTintColor: 'gray',
+            })}
+        >
+            <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+            <Tab.Screen name="Organization" component={OrganizationScreen} options={{ headerShown: false }} />
+        </Tab.Navigator>
+    );
 };
 
 const AppNavigator = () => {
@@ -76,7 +106,7 @@ const AppNavigator = () => {
                     if (response.status === 200) {
                         navigationRef.current?.reset({
                             index: 0,
-                            routes: [{ name: 'Home' }], // Перенаправляем на HomeScreen
+                            routes: [{ name: 'Home' }],
                         });
                     }
                 } catch (error) {
@@ -84,7 +114,7 @@ const AppNavigator = () => {
                     if (newToken) {
                         navigationRef.current?.reset({
                             index: 0,
-                            routes: [{ name: 'Home' }], // Перенаправляем на HomeScreen
+                            routes: [{ name: 'Home' }],
                         });
                     } else {
                         navigationRef.current?.reset({
@@ -105,7 +135,17 @@ const AppNavigator = () => {
 
     return (
         <NavigationContainer ref={navigationRef} linking={linking}>
-            <Stack.Navigator initialRouteName="Intro">
+            <Stack.Navigator
+                initialRouteName="Intro"
+                screenOptions={({ navigation, route }) => ({
+                    headerLeft: () =>
+                        route.name !== 'Home' && route.name !== 'Organization' ? (
+                            <BackButton onPress={() => navigation.goBack()} />
+                        ) : null,
+                    headerStyle: { backgroundColor: '#e28743' }, // Добавляем цвет фона для заголовка
+                    headerTintColor: '#fff', // Цвет текста в заголовке
+                })}
+            >
                 <Stack.Screen name="Intro" component={IntroScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="RegisterUser" component={RegisterUserScreen} options={{ headerShown: false }} />
@@ -113,18 +153,17 @@ const AppNavigator = () => {
                 <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="ResetCode" component={ResetCodeScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="Scan" component={ScanScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="Events" component={EventsScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="Statistics" component={StatisticsScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="Messages" component={MessagesScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="Support" component={SupportScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="PersonalData" component={PersonalDataScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="EmailVerification" component={EmailVerificationScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="CreateEvent" component={CreateEventScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="EditEvent" component={EditEventScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="Home" component={BottomTabNavigator} options={{ headerShown: false }} />
+                <Stack.Screen name="Scan" component={ScanScreen} />
+                <Stack.Screen name="Events" component={EventsScreen} />
+                <Stack.Screen name="Statistics" component={StatisticsScreen} />
+                <Stack.Screen name="Settings" component={SettingsScreen} />
+                <Stack.Screen name="PersonalData" component={PersonalDataScreen} />
+                <Stack.Screen name="EmailVerification" component={EmailVerificationScreen} />
+                <Stack.Screen name="CreateEvent" component={CreateEventScreen} />
+                <Stack.Screen name="EditEvent" component={EditEventScreen} />
+                <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} />
+                <Stack.Screen name="OrganizationScreen" component={OrganizationScreen} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
     );
